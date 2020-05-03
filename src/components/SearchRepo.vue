@@ -58,7 +58,6 @@ export default {
         repoName: "",
         fullRepoName: "",
         repo_data: {},
-        config: {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}
     }
   },
   methods: {
@@ -66,7 +65,7 @@ export default {
       let repo = this.fullRepoName.split(':');
       this.userName = repo[0];
       this.repoName = repo[1];
-      axios.get(`https://api.github.com/repos/${this.userName}/${this.repoName}`, this.config)
+      axios.get(`http://localhost:8080/repos/${this.userName}/${this.repoName}`)
       .then(response => {
         let data = response.data;
         this.repo_data = {

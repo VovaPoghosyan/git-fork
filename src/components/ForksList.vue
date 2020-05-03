@@ -23,7 +23,7 @@
             <md-button
                 class="md-icon-button md-raised"
                 :disabled="current_page === 1"
-                @click="prev"
+                @click="changePage(--current_page)"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
             </md-button>
@@ -33,7 +33,7 @@
             <md-button
                 class="md-icon-button md-raised"
                 :disabled="current_page === pages_count"
-                @click="next"
+                @click="changePage(++current_page)"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/><path d="M0 0h24v24H0z" fill="none"/></svg>
             </md-button>
@@ -54,22 +54,20 @@ export default {
         per_page: 10,
         forks_data: [],
         repo_info: {},
-        config: {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}
     }
   },
     mounted() {
-        this.current_page = this.$route.params.id;
+        this.current_page = Number(this.$route.params.id);
         console.log(this.$route);
         this.repo_info = this.$store.getters.REPO;
         if(Object.keys(this.repo_info).length) {
             this.pages_count = Math.ceil(this.repo_info.forks_count / this.per_page);
             this.getForksData();
         } else {
-            console.log('/////////', this.$route.params.repo)
           let repo = this.$route.params.repo.split(':');
       let userName = repo[0];
       let repoName = repo[1];
-      axios.get(`https://api.github.com/repos/${userName}/${repoName}`, this.config)
+      axios.get(`http://localhost:8080/repos/${userName}/${repoName}`, this.config)
       .then(response => {
         let data = response.data;
         let repo_data = {
@@ -92,7 +90,7 @@ export default {
     getForksData(){
       let userName = this.repo_info.owner;
       let repoName = this.repo_info.repo_name;
-      axios.get(`https://api.github.com/repos/${userName}/${repoName}/forks?page=${this.current_page}&per_page=${this.per_page}`, this.config)
+      axios.get(`http://localhost:8080/repos/${userName}/${repoName}/forks?page=${this.current_page}&per_page=${this.per_page}`)
       .then(response => {
           console.log('////////////',  response.data)
         this.forks_data = response.data;
@@ -100,15 +98,10 @@ export default {
         console.log(error);
       })
     },
-    next() {
+    changePage(page) {
+        console.log(page);
         let params = this.$route.params;
-        params.id = ++this.current_page;
-        this.$router.push({ name: this.$route.name, params: params })
-        this.getForksData();
-    },
-    prev() {
-        let params = this.$route.params;
-        params.id = --this.current_page;
+        params.id = page;
         this.$router.push({ name: this.$route.name, params: params })
         this.getForksData();
     },

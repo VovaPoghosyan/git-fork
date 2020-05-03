@@ -13,6 +13,9 @@
     name: "App",
     components: {
       Header,
-    }
+    },
+    mounted() {
+      
+    },
   }
 </script>

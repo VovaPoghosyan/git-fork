@@ -44,7 +44,7 @@
                 if( this.username ){
                     this.loading = true;
                     console.log("Searching for... " + this.username );
-                    axios.get('https://api.github.com/users/' + this.username, this.config)
+                    axios.get('http://localhost:8080/users/' + this.username)
                         .then(response => {
                             console.log( response.data );
                             this.results = response.data;
