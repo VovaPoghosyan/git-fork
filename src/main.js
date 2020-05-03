@@ -3,9 +3,11 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueMaterial from 'vue-material'
+import AxiosPlugin from 'vue-axios-cors';
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
-
+ 
+Vue.use(AxiosPlugin)
 Vue.use(VueMaterial)
 
 Vue.config.productionTip = false

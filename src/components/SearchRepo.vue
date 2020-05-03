@@ -3,7 +3,7 @@
   <div class="search-container">
     <input
       type="text"
-      placeholder="Search..."
+      placeholder="Owner:Repo-name"
       v-model="fullRepoName"
       @keypress.enter.exact.prevent="findRepo()"
     >
@@ -20,7 +20,7 @@
         <md-table-head>Repo Owner</md-table-head>
         <md-table-head>Stars Count</md-table-head>
         <md-table-head>Forks Count</md-table-head>
-        <md-table-head>Fork Url</md-table-head>
+        <md-table-head>Forks Url</md-table-head>
       </md-table-row>
 
       <md-table-row>
@@ -29,7 +29,7 @@
         <md-table-cell>{{repo_data.stars_count}}</md-table-cell>
         <md-table-cell>{{repo_data.forks_count}}</md-table-cell>
         <md-table-cell>
-          <mdb-nav-item :to="{ name: 'forks-list' }">
+          <mdb-nav-item :to="{ name: 'forks-list', params: {repo: fullRepoName, id:'1'} }">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="black" width="18px" height="18px"><path d="M0 0h24v24H0z" fill="none"/><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
           </mdb-nav-item>
         </md-table-cell>
@@ -58,15 +58,15 @@ export default {
         repoName: "",
         fullRepoName: "",
         repo_data: {},
+        config: {headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}
     }
   },
   methods: {
     findRepo(){
-      this.ifShow = true;
       let repo = this.fullRepoName.split(':');
       this.userName = repo[0];
       this.repoName = repo[1];
-      axios.get(`https://api.github.com/repos/${this.userName}/${this.repoName}`)
+      axios.get(`https://api.github.com/repos/${this.userName}/${this.repoName}`, this.config)
       .then(response => {
         let data = response.data;
         this.repo_data = {

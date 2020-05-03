@@ -21,7 +21,7 @@ export default new Router({
       component: SearchUser
     },
     {
-      path: '/forks-list',
+      path: '/forks-list/:repo/:id',
       name: 'forks-list',
       component: ForksList
     },
