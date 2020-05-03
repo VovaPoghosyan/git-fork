@@ -1,5 +1,24 @@
 <template>
 <div class="container">
+    <div>
+        <md-table>
+            <md-table-row>
+                <md-table-head>Repo Name</md-table-head>
+                <md-table-head>Repo Owner</md-table-head>
+                <md-table-head>Stars Count</md-table-head>
+                <md-table-head>Forks Count</md-table-head>
+            </md-table-row>
+
+            <template v-for="(repo, index) in forks_data">
+                <md-table-row :key="index">
+                    <md-table-cell>{{repo.name}}</md-table-cell>
+                    <md-table-cell>{{repo.owner.login}}</md-table-cell>
+                    <md-table-cell>{{repo.stargazers_count}}</md-table-cell>
+                    <md-table-cell>{{repo.forks_count}}</md-table-cell>
+                </md-table-row>
+            </template>
+        </md-table>
+    </div>
   
 </div>
 </template>
