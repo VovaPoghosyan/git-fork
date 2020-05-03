@@ -10,7 +10,7 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_REPO: (state, payload) => {
-      state.repo.unshift(payload);
+      state.repo = payload;
     },
 
   },
