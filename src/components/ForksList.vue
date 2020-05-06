@@ -24,11 +24,15 @@
                                 <input
                                     :id="`toggle-heart-${index}`"
                                     class="toggle-heart"
-                                    type="checkbox" >
+                                    type="checkbox"
+                                    :checked="favorite_repos[index]"
+                                >
                                 <label
                                     :for="`toggle-heart-${index}`"
+                                    @click="favorites(index)"
                                     class="toggle-heart-label"
-                                    aria-label="like">
+                                    aria-label="like"
+                                >
                                     ❤
                                 </label>
                             </md-table-cell>
@@ -104,6 +108,7 @@ export default {
             forks_data: [],
             repo_info: {},
             loading: true,
+            favorite_repos: [],
         };
     },
     mounted() {
@@ -143,7 +148,15 @@ export default {
             let repoName = this.repo_info.repo_name;
             axios.get(`http://localhost:8080/repos/${userName}/${repoName}/forks?page=${this.current_page}&per_page=${this.per_page}`)
                 .then(response => {
-                    console.log('////////////',  response.data);
+                    this.favorite_repos = [];
+                    let favorites = localStorage.getItem("favorite_repositories");
+                    if(favorites !== null) {
+                        favorites = JSON.parse(favorites);
+                        console.log(favorites);
+                        for (let val in response.data) {
+                            this.favorite_repos[val] = !!favorites[response.data[val]['full_name']]
+                        }
+                    }
                     this.forks_data = response.data;
                     this.loading = false;
                 }).catch(error => {
@@ -157,6 +170,24 @@ export default {
             params.id = page;
             this.$router.push({ name: this.$route.name, params: params });
             this.getForksData();
+        },
+
+        favorites(index) {
+            this.favorite_repos[index] = !this.favorite_repos[index];
+            let data = this.forks_data[index];
+            let favorites = localStorage.getItem("favorite_repositories");
+            if(favorites === null) {
+                favorites = {};
+                favorites[data.full_name] = true;
+            } else {
+                favorites = JSON.parse(favorites);
+                if(favorites[data.full_name]) {
+                    delete favorites[data.full_name];
+                } else {
+                    favorites[data.full_name] = true;
+                }
+            }
+            localStorage.setItem("favorite_repositories", JSON.stringify(favorites));
         },
     },
 };
